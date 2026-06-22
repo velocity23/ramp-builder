@@ -1,0 +1,3009 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>RAMP Builder</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+            :root {
+                --navy: #16233b;
+                --navy-2: #22365a;
+                --bg: #eef1f6;
+                --paper: #ffffff;
+                --ink: #1c2433;
+                --muted: #69768a;
+                --line: #dbe1ea;
+                --accent: #2f6690;
+                --accent-light: #e4eef6;
+                --vl-bg: #cfe8c0;
+                --vl-text: #2f5d24;
+                --l-bg: #a9d18e;
+                --l-text: #2f5d24;
+                --m-bg: #ffd773;
+                --m-text: #6b4a05;
+                --h-bg: #f3a667;
+                --h-text: #6b3300;
+                --vh-bg: #e2574c;
+                --vh-text: #ffffff;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font-family: 'IBM Plex Sans', sans-serif;
+                background:
+                    linear-gradient(var(--bg) 1px, transparent 1px) 0 0/100%
+                        32px,
+                    var(--bg);
+                color: var(--ink);
+                -webkit-font-smoothing: antialiased;
+                min-height: 100vh;
+            }
+            h1,
+            h2,
+            h3,
+            .brand,
+            .btn,
+            .tab,
+            th,
+            .section-label,
+            .risk-badge,
+            .template-card h3 {
+                font-family: 'Space Grotesk', sans-serif;
+            }
+            .code {
+                font-family: 'IBM Plex Mono', monospace;
+                letter-spacing: 0.02em;
+            }
+
+            a {
+                color: var(--accent);
+            }
+
+            /* ---------- Top bar ---------- */
+            .topbar {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                background: var(--navy);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 20px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            }
+            .brand {
+                font-weight: 700;
+                font-size: 1.15rem;
+                letter-spacing: 0.02em;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                user-select: none;
+            }
+            .brand .mark {
+                display: inline-grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                width: 22px;
+                height: 22px;
+                border-radius: 4px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+            }
+            .brand .mark span {
+                display: block;
+            }
+            .brand .mark span:nth-child(1) {
+                background: var(--vl-bg);
+            }
+            .brand .mark span:nth-child(2) {
+                background: var(--m-bg);
+            }
+            .brand .mark span:nth-child(3) {
+                background: var(--h-bg);
+            }
+            .brand .mark span:nth-child(4) {
+                background: var(--vh-bg);
+            }
+            .topbar .spacer {
+                flex: 1;
+            }
+            .topbar .ramp-title-input {
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                color: #fff;
+                font-family: 'Space Grotesk', sans-serif;
+                font-weight: 600;
+                font-size: 1rem;
+                padding: 7px 12px;
+                border-radius: 6px;
+                min-width: 160px;
+                max-width: 360px;
+            }
+            .topbar .ramp-title-input::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+            .topbar .ramp-title-input:focus {
+                outline: 2px solid var(--accent-light);
+                background: rgba(255, 255, 255, 0.14);
+            }
+            .save-status {
+                font-size: 0.78rem;
+                color: rgba(255, 255, 255, 0.65);
+                white-space: nowrap;
+                min-width: 84px;
+            }
+
+            /* ---------- Buttons ---------- */
+            .btn {
+                font-size: 0.85rem;
+                font-weight: 600;
+                letter-spacing: 0.01em;
+                border: 1px solid var(--line);
+                background: var(--paper);
+                color: var(--ink);
+                padding: 8px 14px;
+                border-radius: 7px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition:
+                    transform 0.04s ease,
+                    box-shadow 0.15s ease,
+                    background 0.15s ease;
+            }
+            .btn:hover {
+                box-shadow: 0 2px 6px rgba(22, 35, 59, 0.12);
+            }
+            .btn:active {
+                transform: translateY(1px);
+            }
+            .btn-primary {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #fff;
+            }
+            .btn-primary:hover {
+                background: #265574;
+            }
+            .btn-ghost {
+                background: transparent;
+                border-color: rgba(255, 255, 255, 0.3);
+                color: #fff;
+            }
+            .btn-ghost:hover {
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .btn-danger {
+                color: #a3271f;
+                border-color: #f0c9c5;
+            }
+            .btn-danger:hover {
+                background: #fdeceb;
+            }
+            .btn-sm {
+                padding: 5px 10px;
+                font-size: 0.78rem;
+            }
+            .btn[disabled] {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            /* ---------- Layout shells ---------- */
+            .page {
+                max-width: 1080px;
+                margin: 0 auto;
+                padding: 28px 20px 80px;
+            }
+            .hidden {
+                display: none !important;
+            }
+
+            /* ---------- Home ---------- */
+            .hero {
+                display: grid;
+                grid-template-columns: 1.1fr 0.9fr;
+                gap: 36px;
+                align-items: center;
+                background: var(--navy);
+                color: #fff;
+                border-radius: 14px;
+                padding: 40px;
+                margin-bottom: 36px;
+                overflow: hidden;
+                position: relative;
+            }
+            .hero h1 {
+                font-size: 2.1rem;
+                line-height: 1.15;
+                margin: 0 0 12px;
+                font-weight: 700;
+            }
+            .hero p {
+                color: rgba(255, 255, 255, 0.78);
+                line-height: 1.55;
+                max-width: 46ch;
+            }
+            .hero .eyebrow {
+                font-family: 'IBM Plex Mono', monospace;
+                font-size: 0.75rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--m-bg);
+                margin-bottom: 14px;
+            }
+            .matrix-wrap {
+                justify-self: center;
+            }
+            .matrix-table {
+                border-collapse: collapse;
+                font-family: 'IBM Plex Mono', monospace;
+                font-size: 0.72rem;
+            }
+            .matrix-table th,
+            .matrix-table td {
+                width: 42px;
+                height: 34px;
+                text-align: center;
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+            .matrix-table th {
+                color: rgba(255, 255, 255, 0.6);
+                font-weight: 600;
+                font-size: 0.65rem;
+            }
+            .matrix-table td.cell {
+                font-weight: 700;
+            }
+            .matrix-table .corner {
+                border: none;
+            }
+            .matrix-table .axis {
+                color: rgba(255, 255, 255, 0.55);
+                font-size: 0.62rem;
+                font-family: 'Space Grotesk', sans-serif;
+            }
+            .risk-VL {
+                background: var(--vl-bg);
+                color: var(--vl-text);
+            }
+            .risk-L {
+                background: var(--l-bg);
+                color: var(--l-text);
+            }
+            .risk-M {
+                background: var(--m-bg);
+                color: var(--m-text);
+            }
+            .risk-H {
+                background: var(--h-bg);
+                color: var(--h-text);
+            }
+            .risk-VH {
+                background: var(--vh-bg);
+                color: var(--vh-text);
+            }
+
+            .section-label {
+                font-size: 0.78rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--muted);
+                margin: 0 0 14px;
+                font-weight: 600;
+            }
+            .template-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+                gap: 14px;
+                margin-bottom: 36px;
+            }
+            .template-card {
+                background: var(--paper);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 18px;
+                cursor: pointer;
+                transition:
+                    box-shadow 0.15s ease,
+                    border-color 0.15s ease;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .template-card:hover {
+                box-shadow: 0 4px 14px rgba(22, 35, 59, 0.1);
+                border-color: var(--accent);
+            }
+            .template-card h3 {
+                margin: 0;
+                font-size: 1.02rem;
+            }
+            .template-card p {
+                margin: 0;
+                font-size: 0.85rem;
+                color: var(--muted);
+                line-height: 1.5;
+                flex: 1;
+            }
+            .template-card .meta {
+                font-family: 'IBM Plex Mono', monospace;
+                font-size: 0.72rem;
+                color: var(--accent);
+            }
+            .template-card.blank {
+                border-style: dashed;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                color: var(--muted);
+            }
+            .template-card.blank h3 {
+                color: var(--ink);
+            }
+
+            .saved-list {
+                background: var(--paper);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            .saved-row {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 12px 16px;
+                border-bottom: 1px solid var(--line);
+            }
+            .saved-row:last-child {
+                border-bottom: none;
+            }
+            .saved-row .name {
+                font-weight: 600;
+                flex: 1;
+                cursor: pointer;
+            }
+            .saved-row .name:hover {
+                color: var(--accent);
+            }
+            .saved-row .date {
+                font-size: 0.78rem;
+                color: var(--muted);
+                font-family: 'IBM Plex Mono', monospace;
+            }
+            .empty-note {
+                color: var(--muted);
+                font-size: 0.9rem;
+                padding: 18px;
+                text-align: center;
+            }
+
+            /* ---------- Editor ---------- */
+            .editor-grid {
+                display: grid;
+                grid-template-columns: 1fr 280px;
+                gap: 24px;
+                align-items: start;
+            }
+            @media (max-width: 880px) {
+                .editor-grid {
+                    grid-template-columns: 1fr;
+                }
+                .side {
+                    order: -1;
+                }
+            }
+
+            .card {
+                background: var(--paper);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            .card h2 {
+                margin: 0 0 14px;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .field-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 12px;
+            }
+            .field label {
+                display: block;
+                font-size: 0.75rem;
+                color: var(--muted);
+                margin-bottom: 4px;
+                font-weight: 600;
+                letter-spacing: 0.02em;
+            }
+            .field input,
+            .field textarea,
+            .field select {
+                width: 100%;
+                font-family: inherit;
+                font-size: 0.9rem;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 6px;
+                background: #fcfdfe;
+                color: var(--ink);
+            }
+            .field input:focus,
+            .field textarea:focus,
+            .field select:focus {
+                outline: 2px solid var(--accent-light);
+                border-color: var(--accent);
+            }
+            textarea {
+                resize: vertical;
+                min-height: 60px;
+                line-height: 1.5;
+            }
+
+            /* ---------- Side panel ---------- */
+            .side .card {
+                position: sticky;
+                top: 90px;
+            }
+            .overall-risk {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 14px;
+                border-radius: 8px;
+                background: var(--accent-light);
+                margin-bottom: 14px;
+            }
+            .overall-risk .lbl {
+                font-size: 0.78rem;
+                color: var(--muted);
+                font-weight: 600;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+            }
+            .risk-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 10px;
+                border-radius: 999px;
+                font-size: 0.78rem;
+                font-weight: 700;
+                font-family: 'IBM Plex Mono', monospace;
+                white-space: nowrap;
+            }
+            .risk-badge .code {
+                opacity: 0.85;
+                font-weight: 600;
+            }
+            .risk-badge.size-lg {
+                font-size: 1rem;
+                padding: 7px 14px;
+            }
+            .mini-matrix {
+                font-size: 0.62rem;
+            }
+            .mini-matrix table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .mini-matrix th,
+            .mini-matrix td {
+                border: 1px solid var(--line);
+                text-align: center;
+                padding: 3px 2px;
+                font-family: 'IBM Plex Mono', monospace;
+            }
+            .mini-matrix th {
+                background: var(--accent-light);
+                font-weight: 600;
+                color: var(--accent);
+            }
+            .legend {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 10px;
+                font-size: 0.75rem;
+            }
+            .legend .row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .legend .swatch {
+                width: 16px;
+                height: 16px;
+                border-radius: 3px;
+            }
+
+            /* ---------- Categories & hazards ---------- */
+            .category {
+                background: var(--paper);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                margin-bottom: 18px;
+                overflow: hidden;
+            }
+            .category > .cat-head {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 14px 16px;
+                background: var(--navy-2);
+                color: #fff;
+            }
+            .category > .cat-head input.cat-name {
+                flex: 1;
+                background: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: #fff;
+                font-family: 'Space Grotesk', sans-serif;
+                font-weight: 600;
+                font-size: 0.98rem;
+                padding: 6px 10px;
+                border-radius: 6px;
+            }
+            .category > .cat-head input.cat-name:focus {
+                outline: 2px solid var(--accent-light);
+                background: rgba(255, 255, 255, 0.14);
+            }
+            .cat-body {
+                padding: 14px 16px;
+            }
+            .restore-row {
+                margin: 12px 0 0;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                align-items: center;
+            }
+            .restore-note {
+                font-size: 0.82rem;
+                color: var(--muted);
+                margin-right: 6px;
+                flex: 1 1 100%;
+            }
+            .restore-row .btn {
+                background: #f0f4ff;
+                border-color: #c7d5f0;
+                color: #1f3f7a;
+            }
+            .restore-row .btn:hover {
+                background: #dbe6ff;
+            }
+            .hazard {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 14px;
+                margin-bottom: 12px;
+                background: #fafcfe;
+            }
+            .hazard:last-child {
+                margin-bottom: 0;
+            }
+            .hazard-head {
+                display: flex;
+                gap: 10px;
+                align-items: flex-start;
+                margin-bottom: 10px;
+            }
+            .hazard-head input.haz-name {
+                flex: 1;
+                font-family: 'Space Grotesk', sans-serif;
+                font-weight: 600;
+                font-size: 0.95rem;
+                padding: 8px 10px;
+                border: 1px solid var(--line);
+                border-radius: 6px;
+                background: #fff;
+            }
+            .risk-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) auto;
+                gap: 10px;
+                align-items: end;
+                margin-bottom: 10px;
+            }
+            .risk-row .badge-wrap {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding-bottom: 1px;
+            }
+            .risk-row .stage-label {
+                font-size: 0.7rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--muted);
+                font-weight: 700;
+                grid-column: 1 / -1;
+                margin-top: 6px;
+            }
+            .risk-row .stage-label:first-child {
+                margin-top: 0;
+            }
+            .lock-note {
+                font-size: 0.7rem;
+                color: var(--muted);
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-top: 4px;
+            }
+            select[disabled] {
+                background: #eef1f5;
+                color: var(--muted);
+                cursor: not-allowed;
+            }
+
+            .add-row {
+                display: flex;
+                gap: 10px;
+                margin-top: 6px;
+            }
+            .no-hazards {
+                color: var(--muted);
+                font-size: 0.85rem;
+                padding: 8px 0;
+            }
+
+            .app-empty {
+                text-align: center;
+                padding: 60px 20px;
+                color: var(--muted);
+            }
+            .app-empty h2 {
+                color: var(--ink);
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+
+            footer.foot {
+                text-align: center;
+                color: var(--muted);
+                font-size: 0.78rem;
+                padding: 20px;
+                font-family: 'IBM Plex Mono', monospace;
+            }
+
+            /* ---------- Print ---------- */
+            #print-area {
+                display: none;
+            }
+            @media print {
+                body {
+                    background: #fff;
+                }
+                .topbar,
+                .page,
+                footer.foot {
+                    display: none !important;
+                }
+                #print-area {
+                    display: block;
+                }
+                #print-area h1 {
+                    font-family: 'Space Grotesk', sans-serif;
+                    font-size: 1.4rem;
+                    margin-bottom: 2px;
+                }
+                #print-area h2 {
+                    font-family: 'Space Grotesk', sans-serif;
+                    font-size: 1rem;
+                    margin: 18px 0 6px;
+                    border-bottom: 2px solid var(--navy);
+                    padding-bottom: 4px;
+                }
+                #print-area .print-meta {
+                    font-size: 0.8rem;
+                    color: #444;
+                    margin-bottom: 14px;
+                }
+                #print-area .print-meta table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 0.8rem;
+                }
+                #print-area .print-meta td {
+                    padding: 3px 6px;
+                    border: 1px solid #ccc;
+                    vertical-align: top;
+                }
+                #print-area .print-meta td.k {
+                    font-weight: 700;
+                    background: #f3f4f6;
+                    width: 140px;
+                }
+                #print-area .ramp-overall {
+                    font-size: 0.85rem;
+                    margin-bottom: 10px;
+                }
+                #print-area .context {
+                    font-size: 0.85rem;
+                    line-height: 1.5;
+                    margin-bottom: 10px;
+                    white-space: pre-wrap;
+                }
+                #print-area table.hazards {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 0.78rem;
+                    margin-bottom: 6px;
+                }
+                #print-area table.hazards th,
+                #print-area table.hazards td {
+                    border: 1px solid #bbb;
+                    padding: 6px;
+                    text-align: left;
+                    vertical-align: top;
+                }
+                #print-area table.hazards th {
+                    background: #eef1f6;
+                    font-family: 'Space Grotesk', sans-serif;
+                }
+                #print-area table.hazards td.risk-cell {
+                    text-align: center;
+                    font-family: 'IBM Plex Mono', monospace;
+                    font-weight: 700;
+                    white-space: nowrap;
+                }
+                #print-area table.hazards tr {
+                    page-break-inside: avoid;
+                }
+                #print-area .cat-risk {
+                    font-family: 'IBM Plex Mono', monospace;
+                    font-weight: 700;
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    font-size: 0.75rem;
+                }
+                #print-area .print-foot {
+                    margin-top: 24px;
+                    font-size: 0.7rem;
+                    color: #888;
+                    font-family: 'IBM Plex Mono', monospace;
+                }
+                * {
+                    print-color-adjust: exact;
+                    -webkit-print-color-adjust: exact;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="topbar">
+            <div class="brand" id="brand-home" title="Back to home">
+                <span class="mark"
+                    ><span></span><span></span><span></span><span></span
+                ></span>
+                RAMP Builder
+            </div>
+            <input
+                id="ramp-title-input"
+                class="ramp-title-input hidden"
+                placeholder="Untitled RAMP"
+                maxlength="120"
+            />
+            <div class="spacer"></div>
+            <span id="save-status" class="save-status"></span>
+            <button
+                class="btn btn-ghost hidden"
+                id="btn-export"
+                title="Export this RAMP as a JSON file"
+            >
+                Export JSON
+            </button>
+            <button class="btn btn-ghost hidden" id="btn-print">
+                Print / Save as PDF
+            </button>
+        </div>
+
+        <div class="page" id="page"></div>
+
+        <div id="print-area"></div>
+
+        <footer class="foot">
+            RAMP Builder — data is stored on this device/account, not sent
+            anywhere else.
+        </footer>
+
+        <input
+            type="file"
+            id="import-input"
+            accept="application/json"
+            class="hidden"
+        />
+
+        <script>
+            /* =========================================================================
+   RISK MODEL — based on the AAFC SRM Definitions and Risk Matrix
+   ========================================================================= */
+            const LIKELIHOODS = [
+                { v: 1, label: 'Rare' },
+                { v: 2, label: 'Improbable' },
+                { v: 3, label: 'Occasional' },
+                { v: 4, label: 'Probable' },
+                { v: 5, label: 'Almost Certain' },
+            ];
+            const CONSEQUENCES = [
+                { v: 'A', label: 'Minor' },
+                { v: 'B', label: 'Moderate' },
+                { v: 'C', label: 'Major' },
+                { v: 'D', label: 'Critical' },
+                { v: 'E', label: 'Catastrophic' },
+            ];
+            // matrix[likelihood][consequence] -> risk level code
+            const RISK_MATRIX = {
+                1: { A: 'VL', B: 'VL', C: 'VL', D: 'L', E: 'L' },
+                2: { A: 'VL', B: 'VL', C: 'L', D: 'M', E: 'M' },
+                3: { A: 'VL', B: 'L', C: 'M', D: 'H', E: 'H' },
+                4: { A: 'L', B: 'M', C: 'H', D: 'H', E: 'VH' },
+                5: { A: 'L', B: 'M', C: 'H', D: 'VH', E: 'VH' },
+            };
+            const RISK_LEVELS = {
+                VL: { label: 'Very Low', order: 1 },
+                L: { label: 'Low', order: 2 },
+                M: { label: 'Medium', order: 3 },
+                H: { label: 'High', order: 4 },
+                VH: { label: 'Very High', order: 5 },
+            };
+
+            function getRisk(likelihood, consequence) {
+                const level = (RISK_MATRIX[likelihood] || {})[consequence];
+                if (!level) return { code: '—', level: null, label: '—' };
+                return {
+                    code: `${consequence}${likelihood}`,
+                    level,
+                    label: RISK_LEVELS[level].label,
+                };
+            }
+            function likelihoodLabel(v) {
+                const m = LIKELIHOODS.find((l) => l.v === Number(v));
+                return m ? m.label : v;
+            }
+            function consequenceLabel(v) {
+                const m = CONSEQUENCES.find((c) => c.v === v);
+                return m ? m.label : v;
+            }
+            function riskBadgeHTML(likelihood, consequence, size) {
+                const r = getRisk(likelihood, consequence);
+                if (!r.level)
+                    return `<span class="risk-badge${size ? ' size-' + size : ''}">—</span>`;
+                return `<span class="risk-badge risk-${r.level}${size ? ' size-' + size : ''}">
+            <span class="code">${r.code}</span> ${r.level} · ${r.label}
+          </span>`;
+            }
+            function likelihoodOptions(selected) {
+                let html = '';
+                if (selected === null) {
+                    html +=
+                        '<option value="" selected disabled>Select...</option>';
+                }
+                html += LIKELIHOODS.map(
+                    (l) =>
+                        `<option value="${l.v}"${Number(selected) === l.v ? ' selected' : ''}>${l.v} – ${l.label}</option>`,
+                ).join('');
+                return html;
+            }
+            function consequenceOptions(selected) {
+                let html = '';
+                if (selected === null) {
+                    html +=
+                        '<option value="" selected disabled>Select...</option>';
+                }
+                html += CONSEQUENCES.map(
+                    (c) =>
+                        `<option value="${c.v}"${selected === c.v ? ' selected' : ''}>${c.v} – ${c.label}</option>`,
+                ).join('');
+                return html;
+            }
+
+            /* =========================================================================
+   TEMPLATES — these mirror what would live in templates/*.json files.
+   Each template is plain JSON: { id, name, description, data: { context, categories: [...] } }
+   To add a new template, add another object to this array following the
+   same shape (or load one from an external .json file at startup).
+   ========================================================================= */
+            const TEMPLATES = [
+                {
+                    id: 'eca',
+                    name: 'Extra-Curricular Activity',
+                    description: 'Template for AAFC ECA activities',
+                    data: {
+                        context:
+                            'Describe the activity here: dates, locations, accommodation and catering arrangements, supervision plan, and any activity-specific notes (e.g. weather monitoring, hydration, RPAS safety, excursions).',
+                        categories: [
+                            {
+                                name: 'Youth Protection',
+                                hazards: [
+                                    {
+                                        name: 'YP03 - Minor released to non-custodial or inappropriate person',
+                                        initL: 1,
+                                        initC: 'C',
+                                        plan: `Where custodial arrangements are known, Directing Staff briefed on such arrangements, including exclusions/restrictions placed on identified persons.
+
+Where custodial arrangements are known, Directing Staff to supervise the release of minor(s) to custodial guardian/person at cessation of activity.
+
+Directing Staff to notify OIC of any observed concerns prior to the release of a minor to a guardian/person in relation to known custodial arrangements.
+
+Directing Staff to notify OIC of any attempt for a non-custodial person to take guardianship of a minor.
+
+OIC to contact appropriate authority if concerns are identified about non-custodial persons accessing minors (child services/protection agencies, State/Territory/Military Police).`,
+                                        locked: true,
+                                    },
+                                    {
+                                        name: 'YP01 - Inadequate supervision leading to unacceptable behaviour or misconduct',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `- All tasks/activities have undergone risk-based evaluation to determine appropriate supervision requirements and supervisors have been tasked and briefed accordingly.
+
+- Supervision requirements prior to and immediately following the activity have been reviewed to ensure that cadets that may arrive early, are afforded appropriate adult supervision.
+
+- Supervision requirements articulated in AAFC SI(OPS) 01-01 - Activity Management implemented.
+
+- Adequate supervision ratios enforced on activity IAW Activity Management SI;
+
+- If female Cadets are in attendance, then the activity should also have at least one female adult supervisor in attendance. Where it is not reasonably practicable to have a female adult supervisor in attendance, then a female adult supervisor should be immediately accessible to female Cadets via remote means for the duration of the activity, (e.g. telephone and/or email), in order to ensure that female Cadets are afforded appropriately contextualised and/or tailored support should they require it.
+
+- External persons attending activity which involves interaction with children hold an appropriate child safety check (State/Territory based) and are supervised at all times by DS;
+
+- Interaction between children and adults supervised by DS, including drop-off and pick-up;
+
+- Visitor and contractor sign-in process implemented;
+
+- If operating on Defence property, activity is to be undertaken with access to members of public through locked gates, access, control and/or security.`,
+                                        locked: true,
+                                    },
+                                    {
+                                        name: 'YP02 - Misuse of social media or online environment between cadets',
+                                        initL: 4,
+                                        initC: 'C',
+                                        plan: `- Personnel briefed on AAFC social media policy and mobile device policy, as part of activity briefings.
+
+- Personnel reminded of behavioural expectations / code of conduct.
+
+- Completion of behavioural policy training verified for all participants.
+
+Eliminate the need for minors to access online services during activity;
+
+Access to online social media platform restricted during activity (e.g. Facebook, Instagram, Twitter, TikTok, Youtube, Snapchat, etc.)
+
+Access to online platforms, if required, monitored by DS;
+
+Photography supervised and monitored by DS.`,
+                                        locked: true,
+                                    },
+                                    {
+                                        name: 'YP04 - Failure to respond to a youth protection event',
+                                        initL: 2,
+                                        initC: 'D',
+                                        plan: `ADF and APS personnel along with cadets, cadet staff and volunteers undertake Defence Youth Protection Training as appropriate IAW YOUTH POLMAN;
+
+ADF and APS personnel along with cadets, cadet staff, volunteers and participants in Defence Youth Programs undertake Defence Youth Protection Training as appropriate IAW YOUTHPOLMAN;
+
+ADF, APS, cadets, cadet staff, volunteers and participants in Defence Youth Programs comply with the applicable Defence Youth Safe code of conduct which are written in clear language;
+
+Supervisors and managers at all levels ensure compliance with YOUTH POLMAN;
+
+Personnel, at all levels, who are responsible for managing and responding to youth protection events must ensure that any complaint is managed IAW relevant policies and procedures;
+
+Affected persons are to be provided with appropriate level of support.`,
+                                        locked: true,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Personnel',
+                                hazards: [
+                                    {
+                                        name: 'COVID-19, Influenza and/or other respiratory illness affliction during Activity',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `COVID-19 risks managed IAW State/Territory jurisdictional requirements, health orders etc;
+
+Personnel with signs or symptoms of COVID-19 infection are not to attend activities.
+
+Appropriate hygiene equipment supplied and deployed to appropriate areas.
+
+PPE available for personnel.
+
+Safety Briefings to include personal and communal hygiene.`,
+                                        locked: true,
+                                    },
+                                    {
+                                        name: 'Asthma (Risk of attack)',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Nominal/medical roll reviewed to identify known sufferers prior to activity commencement;
+
+Obtain copy of asthma/medical management plan at commencement of activity (no form = no go);  
+
+Directing Staff to confirm appropriate and sufficient medication is on person (no medication = no go);
+
+Medical management plans collated, stored and made available to Directing Staff;
+
+Directing Staff briefed on identified sufferers during staff activity briefing;
+
+Consideration given to activity location and potential triggers of an attack (dust, pollen, etc.);
+
+Consideration given to level of physical activity planned for activity;
+
+Monitor State/Territory health departments in lead up to activity to determine potential of thunderstorm asthma;
+
+Administration of medication supervised by Directing Staff IAW Medical Management Plan;
+
+Qualified First Aiders on activity and medical evacuation plan developed and communicated to Directing Staff.`,
+                                        locked: true,
+                                    },
+                                    {
+                                        name: 'Fatigue',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Personnel roster planned using CEA Activity Management module (Conduct > Roster);
+
+Adequate rest opportunities scheduled in to activity management;
+
+Level of activity and complexity matched with levels of fatigue;
+
+Personnel supervised and monitored for signs of fatigue and tasks modified in response;
+
+Management consideration given to work conducted and awake hours throughout the day prior to commencement of cadet or cadet supervisory duties.`,
+                                    },
+                                    {
+                                        name: 'Poor Hygiene (Leading to Illness)',
+                                        initL: 4,
+                                        initC: 'B',
+                                        plan: `Suitable hand washing facilities (hot water, soap and/or hand sanitizer, paper towels) available at toilets, food preparation and serving areas;
+
+Members to regularly wash and bathe as regularly as practical;
+
+Waste removed or stored in dedicated refuse area away from cooking, eating and accommodation areas;
+
+Personnel briefed to bring personal toiletries for overnight activities.`,
+                                    },
+                                    {
+                                        name: 'Stress',
+                                        initL: 5,
+                                        initC: 'B',
+                                        plan: `Workload plan developed prior to activity to ensure reasonable working hours and adequate rest;
+
+Supervisors to monitor working hours against plan;  
+
+Workload to match individual members' ability;
+
+Adequate down-time and personal time provided to members on prolonged activities;
+
+Adequate sleeping period provided to all members.`,
+                                    },
+                                    {
+                                        name: 'Hypoglycaemia',
+                                        initL: 1,
+                                        initC: 'D',
+                                        plan: `Nominal/medical roll reviewed prior to activity to identify members with known condition;
+
+Consult with identified members/NOK to obtain Medical Management Plan;
+
+Ensure copy of Medical Management Plan at commencement of activity;
+
+One copy of Medical Management Plan kept on person the other with Activity SAFO;
+
+Directing Staff briefed on condition and plan;
+
+Known members monitored to ensure adequate, regular and proper food intake.`,
+                                    },
+                                    {
+                                        name: 'Footwear (Risk of Blisters)',
+                                        initL: 5,
+                                        initC: 'A',
+                                        plan: `Correctly fitted footwear issued to personnel;
+
+Alternate footwear to scale of issue to be considered where necessary in the context of the activity; 
+
+Brief members on working in footwear prior to attending activities involving working on feet;
+
+Blisters management guide included in activity Joining Instruction prior to activity commencement;
+
+Members briefed to tape known areas of feet where blisters/hot spots are known to occur (especially if susceptible);
+
+Workload on feet monitored, including weather (i.e. hot, sweaty) to determine appropriate changes to use of feet.`,
+                                    },
+                                    {
+                                        name: 'Home Sickness',
+                                        initL: 3,
+                                        initC: 'A',
+                                        plan: `First overnight activity cadets identified on nominal roll; 
+
+Nomal/medical roll reviewed to identify any pre-existing conditions which may lead to home sickness (i.e. mental health conditions);  
+
+First overnight activity cadets briefed in the lead up to the activity commencement to discuss unknowns and any concerns new members may have (include experienced cadets to provide support);
+
+Personnel monitored for signs of home sickness by Directing Staff;
+
+Personnel displaying signs supported by staff and action plan formulated;
+
+Allow personnel to contact home and provide means to do so;
+
+If appropriate arrange for personnel to be removed from activity.`,
+                                    },
+                                    {
+                                        name: 'Manual Handling (Pushing, pulling, lifting, etc..)',
+                                        initL: 4,
+                                        initC: 'C',
+                                        plan: `All members provided instruction on correct manual handling techniques; 
+
+Buddy lifting system used for any items which are assessed too heavy for the individual to carry;
+
+Mechanical lift aids used for heavy or awkward loads; 
+
+Ergonomics considered for the storage height of items (i.e. off the ground, heavy items on lower shelves, etc.).`,
+                                    },
+                                    {
+                                        name: 'Fainting (Gravitational)',
+                                        initL: 4,
+                                        initC: 'C',
+                                        plan: `Weather conditions monitored in the four days leading up to the activity; 
+
+Plan activity to minimise the amount of prolonged standing required;
+
+Members to be formed up for no longer than five (5) minutes prior to task commencement and in a position of rest;
+
+Activity planned to avoid heat of day; 
+
+Instructions given to all members to ensure food and water consumption are sufficient prior to commencement of activity; 
+
+Sufficient provision of food and water throughout the activity;  
+
+Food and water consumption monitored by Directing Staff; 
+
+Advice provided prior to activity on need to consume sufficient food and water prior to activity;
+
+Advice and guidance provided to members expecting to stand on parade (i.e. wiggle toes, squeeze hands, etc.);
+
+All members briefed on actions if feeling faint or dizzy (i.e. take a knee).`,
+                                    },
+                                    {
+                                        name: 'Members of the Public (Conflict / Aggression)',
+                                        initL: 1,
+                                        initC: 'C',
+                                        plan: `Personnel briefed to remain with group when in public;
+
+Adequate staff supervision provided;
+
+Where practicable, members to travel to/from activity in civilian attire, or civilian clothing which will cover uniform from public view;
+
+Cadets released from activity only when parents/guardians arrive;
+
+Staff to remain vigilant and situationally aware;
+
+Where practicable, activities held on secure properties (Defence establichment, private site, etc.);`,
+                                    },
+                                    {
+                                        name: 'Lost Person(s)',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Actions On Lost (AOL) procedure developed specific to activity (Reference MOGT Part 3, Chapter 4 - Emergency Procedures); 
+
+Ensure provision of required equipment as per developed actions on lost procedure (i.e. whistle, phone, radios, etc.) prior to activity commencement;  
+
+Provided equipment confirmed serviceable prior to activity commencement; 
+
+Suitable vehicle available to conduct searches along road ways (including unsealed roads where identified);
+
+Activity OIC brief conducted IAW OIC Checklist (covering AOL procedure) to all members at commencement of activity;  
+
+Directing Staff attached to cadet groups when navigating in uncontrolled environments;  UHF Radios issued to sections;  
+
+Back-up batteries issued to sections;  
+
+At least one member of the section trained in RATEL; 
+
+Radios checked and tested prior to departure from base; 
+
+Hi-visibility vests available to all Directing Staff to don if required to undertake a preliminary search for missing person(s); 
+
+OIC to contact Emergency Services immediately if preliminary search is unable to locate missing person(s);  
+
+Have all available personnel information available to provide to SAR.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Transport / Driving',
+                                hazards: [
+                                    {
+                                        name: 'Dangerous Goods Transported by Road (Escape, Spill, Fire, Explosion, Exposure)',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Dangerous Goods (DGs) to be segrated from other DGs IAW Safety Data Sheet(s) - Section 14 Transport Information.
+
+DG not to be transported inside driver and/or passenger compartments.
+
+All DG to be transported in Australian Standard containers as applicable to each Class.
+
+DG to be contained/restrained and transported IAW Land Vehicle Operations Manual (LVOM).
+
+DG to be transported in limited quantities not exceeding SDS Transport Information or ADG Code limited quantities.
+
+Drivers made aware and provided SDS of DG to be transported in vehicle.
+
+Only DG with a Packaging Group III (PG III) may be transported (no PG I or II).
+
+Safety Data Sheet (SDS) for Dangerous Goods (DG) accessed, read and understood (in particular Transport Information).`,
+                                    },
+                                    {
+                                        name: 'Vehicle Breakdown',
+                                        initL: 2,
+                                        initC: 'D',
+                                        plan: `Vehicle(s) confirmed serviceable for journey; 
+
+Spare tyres checked serviceable;  
+
+Consumable spares as recommended are carried (eg oil, coolant);  
+
+Drivers familiar with low level repairs (eg changing tyres, topping-up oils) including safety considerations for being able to carry out such things as tyre changes; 
+
+Emergency signage carried (triangles); 
+
+Communications capability carried during journey.`,
+                                    },
+                                    {
+                                        name: 'Driving Weather',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Driver to check weather forecast prior to departure to prepare for anticipated conditions;
+
+Pre-driving check of vehicle to ensure head lights, high-beams, hazard lights, windscreen wipers, washer jets, demister, break lights and indicators are all operating.;
+
+Pre-driving check of vehicle to ensure sufficient tread on tyres.
+
+Pre-driving check of vehicle to ensure sufficient wiper fluid levels.
+
+Driver to pull-over in a safe area should weather become concerning and wait until such time they are confident to continue.`,
+                                        resL: 1,
+                                        resC: 'C',
+                                    },
+                                    {
+                                        name: 'Poor or Low Visibility',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Driving to occur during high visibility (i.e. not through thick fog);
+
+Vehicle fitted with sun visor;
+
+Driver to operate vehicle appropriate to conditions;
+
+Driver to reduce speed, or pull over in a safe location off the road, if experiencing low-visibility driving conditions.`,
+                                    },
+                                    {
+                                        name: 'Poor Vehicle Standards',
+                                        initL: 2,
+                                        initC: 'E',
+                                        plan: `All transport utilised must have the relevant, current road certification, registration and insurance;
+
+Vehicle must be inspected prior to operations to ensure road-worthiness.
+
+For Defence Vehicles: Strict conformance with the Land Vehicle Operations Manual (LVOM) is mandatory.`,
+                                    },
+                                    {
+                                        name: 'Trailer Towing',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Use alternative vehicle, such as rigid-bodies vehicles, where able rather than using a trailer;
+
+Trailer to have all safety features fitted, including break lights, indicators and parking lights;
+
+Drivers must be proficient and experienced in the towing of trailers, including highway driving and reversing;
+
+Trailer not to exceed the width of the vehicle towing it;
+
+Combined length of vehicle and trailer is not to exceed 19 metres;
+
+Trailer weight must not exceed the rated towing weight of the vehicle and fitted tow-ball.`,
+                                    },
+                                    {
+                                        name: 'Loose objects/cargo',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Cargo, of any type, is to be carried in the designated cargo area of the vehicle (not inside the cabin, on seats, in bus aisles, etc.):
+
+Cargo barriers installed in vehicles where the cargo area is internal (i.e. Pajero or similar);
+
+Cargo is either to be contained or restrained using appropriate and approved containment or restraint devices, especially when using heavy vehicles to stop cargo or objects from moving in transit.`,
+                                    },
+                                    {
+                                        name: 'Speeding',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Drivers to operate vehicles IAW DRTM (30 Jan 20) Safety Considerations 5.76 through 5.78;
+
+Drivers are to adhere to Sate/Territory and Commonwealth (i.e. Air Force Base, etc.) posted speed limits.`,
+                                    },
+                                    {
+                                        name: 'Manoeuvring in restricted spaces or reversing',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Drivers to operate the vehicle IAW LVOM Part 3 Chapter 5 (previously DRTM).;
+
+Tight spaces are to be avoided in any vehice type where practicable;
+
+If manoeuvring in tight spaces, or reversing a fellow licensed member must act as a spotter who must maintain a three metre exclusion distance from the vehicle at all times;
+
+Spotter is to wear a high-visibility garment (vest, etc.);
+
+If manoeuvring or reversing at night is necessary (best to be avoided), the spotter must use light wands and maintain a three metre exclusion distance from the vehicle at all times`,
+                                    },
+                                    {
+                                        name: 'Other Road Users',
+                                        initL: 1,
+                                        initC: 'E',
+                                        plan: `Vehicle must be fitted with standard safety features, such as ABS, air-bags, seat-belts, day-time running lights, etc.;
+
+Driver must maintain a safe braking distance from other motorists in front;
+
+Driver to remain vigilant whilst operating the vehicle at all times;
+
+When operating a vehicle headlights must be turned on at all times, regardless of time of day, to draw attention to other motorists.`,
+                                    },
+                                    {
+                                        name: 'Wildlife',
+                                        initL: 1,
+                                        initC: 'D',
+                                        plan: `Dusk and dawn driving is to be avoided;
+
+Where wildlife signs are posted, driver is to recognise and remain vigilant;
+
+Utilise local knowledge of area regarding wildlife type and frequency and adjust route accordingly;
+
+High traffic wildlife areas are to be avoided where able.`,
+                                    },
+                                    {
+                                        name: 'Driver Competency',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Verify that vehicle driver(s) hold the relevant and current licences and qualifications required to operate the specific forms of transport being utilised;
+
+Holders of provisional licences not to transport cadets in their vehicle(s);
+
+Vehicle(s) operated IAW Land Vehicle Operations Manual (LVOM);
+
+Driver competency for Defence Vehicles must be IAW Land Vehicle Operations Manual (LVOM) Part 4.  
+
+IOC and OOC use of Defence Vehicles must be IAW Land Vehicle Operations Manual (LVOM) Part 6;
+
+Vehicle(s) operated IAW local, state and federal laws and road rules; 
+
+Heavy Vehicle(s) operated IAW Heavy Vehicle National Law (in applicable States/Territories) alongside the Land Vehicle Operations Manual (LVOM).`,
+                                    },
+                                    {
+                                        name: 'Driver Fatigue',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Eliminate the need for AAFC personnel to drive by engaging an External Transport Provider;
+
+No overnight driving;
+
+Drivers and managers are to make themselves familiar with Part 3 of the the Land Vehicle Operations Manual (LVOM);
+
+All Driving duties are to be managed IAW Land Vehicle Operations Manual (LVOM);
+
+Drivers of Fatigue Related Heavy Vehicles, when travelling greater than outside of a 100km radius must record their hours in an approved Work Diary
+
+Suitable accommodation provided to all designated drivers to ensure quality rest can be gained.`,
+                                    },
+                                    {
+                                        name: 'Road Conditions',
+                                        initL: 2,
+                                        initC: 'E',
+                                        plan: `Vehicle(s) fitted with appropriate tyres for planned journey and duties;
+
+Vehicle(s) operated on roads or formed roads are appropriate for use for the type of vehicle being operated;
+
+Vehicle(s) operated in response to road conditions, confidence, experience and skill of driver;
+
+Driver(s) to inspect tyres for tread wear daily prior to commencement of driving duties.`,
+                                    },
+                                    {
+                                        name: 'Drugs and alcohol',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Drivers must be able to register a zero blood alcohol level when operating transport during cadet activities;
+
+Drivers must not consume any form of prohibited substance when operating any form of transport;
+
+Drivers must not consume alcohol during activities;
+
+OOC, IOC, DAH, Defence members on prescription drugs that are recognised as causing drowsiness must not operate any form of transport.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Plant & Equipment',
+                                hazards: [
+                                    {
+                                        name: 'Building Fire',
+                                        initL: 1,
+                                        initC: 'E',
+                                        plan: `Buildings/rooms used are fitted with smoke detectors/alarms;
+
+Smoke detectors tested and are working;
+
+Electrical equipment used has been tested and tagged and is within test dates;
+
+Evacuation plan is developed and on display;
+
+Evacuation plan is briefed to all members at or prior to the commencement of the activity;
+
+Suitable fire fighting equipment is available and members are familiar with their use.
+
+Emergency plan includes actions on to contact emergency services immediately`,
+                                    },
+                                    {
+                                        name: 'Operating a Generator',
+                                        initL: 4,
+                                        initC: 'D',
+                                        plan: `BBQ operated IAW Safe Work Procedure SWP-002
+
+Confirm within service schedule/dates;
+
+Ensure equipment is only operated by competent or experienced operators;
+
+Ensure equipment is refueled only when turned off and cooled down;
+
+Ensure appropriate fire fighting equipment is available and members are competent in use.`,
+                                    },
+                                    {
+                                        name: 'Communications (Radio, Phone, etc.)',
+                                        initL: 1,
+                                        initC: 'D',
+                                        plan: `Appropriate communication equipment selected for activity during activity planing phase based on requirements (Mobile phones, Radios, Satellite Phones, Personal Locator Beacons, etc.);  
+
+For bivouacs held in a contained environment (i.e. fenced property) mobile phones and radios are to be taken, confirming mobile phone coverage is adequate from the provider;  
+
+For bivouacs held in an un-contained environment (i.e. State Forest, National Park, etc.) mobile phones, radios and either a satellite phone or Personal Locator Beacon (PLB) to be taken;  
+
+Communications plan developed and tested prior to activity commencement;  
+
+Mobile phone coverage map provided by telecommunication provider (online) checked to confirm mobile phone reception is available in area of operations prior to commencement of activity;  
+
+OIC to ensure appropriate numbers of staff have mobile phones, including the ability to recharge throughout the activity;  
+
+All communication equipment checked and tested prior to departing to activity; 
+
+All are staff made familiar with the use of each piece of communication equipment (training such as RATEL for radios, or familiarisation with the use of satellite phones or PLB); 
+
+UHF Channels 5 & 35 are used for emergencies on the citizen band network requiring external assistance from emergency services no other form of communication is available; 
+
+Communication information briefed to all personnel during safety brief;  All relevant emergency services numbers collated and made available to Directing Staff.`,
+                                    },
+                                    {
+                                        name: 'Electricity (Risk of Electric Shock, Fire)',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Electrical items tested and tagged and within test dates prior to activity.
+
+Undertake a check of the physical condition of the electrical equipment, including the lead and plug connections, prior to commencing use.
+
+Electrical items outside of test dates not to be used.
+
+Ensure power circuits are protected by the appropriate rated fuse or circuit breaker to prevent overloading.
+
+Visual inspection of electrical equipment prior to use to identify any damage or wear & tear.
+
+Arrange electrical leads so they will not be damaged. So far as is reasonably practicable, avoid running leads across the floor or ground, through doorways and over sharp edges, and use lead stands or insulated cable hangers to keep leads off the ground.
+
+Residual Current Devices (RCD) confirmed and in use on all leads and equipment.
+
+Double adapters not used.
+
+Ensure circuits where portable electrical equipment can be connected are protected by appropriate RCDs (as required by the WHS Regulations) that are properly tested and maintained.
+
+Don’t use leads and tools in damp or wet conditions unless they are specially designed for those conditions.`,
+                                    },
+                                    {
+                                        name: 'Hand Tools',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Instruction given on use of tools prior to use;
+
+Stable work surface used;
+
+Tools maintained in serviceable state;
+
+Tools used for intended purpose;
+
+Close supervision maintained until cadets competent in use;
+
+Correct PPE available and use policed by supervising staff.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Food / Cooking',
+                                hazards: [
+                                    {
+                                        name: 'Food (Storage, Transport, Handling)',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Raw food is isolated from other foods;
+
+Utensils and equipment used in the handling and preparation of food is isolated and not used on other foods;
+
+For perishible foods, regular temperature monitoring is undertaken;
+
+For perishible foods, use appropriate food storage requirements, such as fridges, freezers, etc., to keep food outside of the temperature danger zone of 5°C - 60°C;
+
+All OOCs, IOCs, Cadets and others at AAFC activities who are handling food in the delivery of catering, or supervision of catering, must have completed, as a minimum, the I’M ALERT Food Safety Training program.  Alternatively a Food Handler's Certificate, Food Safety Certificate or Food Safety Supervior is required (as per Chapter 14 of the SAFMAN);
+
+ Persons who do not have appropriate training, skills and knowledge in relation to Food Safety are not permitted to handle food or supervising the handling of food, on AAFC activities;
+
+Handling, preparation and cooking utensils are washed with hot soapy after use;
+
+Where providing food, a regular cleaning schedule with appropriate cleaning supplies is implemented and enforced;
+
+Food is to be transported in appropriate, temperature controlled equipment;
+
+Appropriate hand-washing facilities are provided for food handlers (hot water, soap, hand sanitizer, etc.);
+
+If identified as a requirement, food handling gloves are to be worn by food handlers.`,
+                                    },
+                                    {
+                                        name: 'Food Allergens (Peanuts, Tree Nuts, Milk, Eggs, Sesame, Fish, Shellfish, Soy, Wheat, Lupin)',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Catering staff provided with list of identified food allergies and alternatives arranged for identified sufferers.
+
+Potential sufferers identified during activity planning;
+
+Activity planned IAW Allergy Management Checklist (Annex A to OIC Activity Briefing Checklist);
+
+Australasian Society of Clinical Immunology and Allergy (ASCIA) Action Plan received by Directing Staff at commencement of activity and one copy kept on individual (no form = no attendance);
+
+Individual medication confirmed with person by Directing Staff at commencement of activity (no medication = no attendance);
+
+Allergy statement included in Joining Instructions;
+
+Directing Staff First Aid Qualified;
+
+Medical evacuation plan developed and communicated to all Directing Staff.`,
+                                    },
+                                    {
+                                        name: 'Gas BBQ',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Where practicable and available, substitute the use of LP Gas with alternative cooking options (such as electric, microwave, etc.).
+
+Cooking with the use of LP Gas to be conducted in an outdoor, well ventilated area.
+
+Inspect the hose for signs of perishing or cracking - if the hose is cracked or perished, don't use the BBQ until the hose has been replace.
+
+Use a squeezy bottle filled with soapy water to check the connection for gas leaks (use dishwashing liquid and water).  Squirt the connection with the suds from the soapy water solution.  Bubbles will form if gas is escaping, if bubbles are seen switch of gas immediately.
+
+LP Gas to be used, handled and stored in accordance with the manufacturer's Safety Data Sheet (available from ChemAlert) which is provided at point of use.
+
+Gas bottles older than 10 years are not to be used.
+
+Close valves on LP Gas cyclinders when not in use;
+
+Use of safety gas valve on cylinder;
+
+Personnel to wear PPE in accordance with manufacturer's Safety Data Sheet.
+
+Close valves on LP Gas cylinders when not in use.
+
+Personnel to wear PPE in accordance with manufacturer's Safety Data Sheet.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Environment / Outdoors',
+                                hazards: [
+                                    {
+                                        name: 'Arbovirus (mosquito/tick-borne illness)',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Where practicable, substitute work area from outdoors to indoors.
+
+Workers to stay indoors in known areas of transmission (either known through local knowledge, or from relevant State/Territory Health Departments) during mornings and evenings.
+
+Use air-conditioning and window screens in buildings.  
+
+Use mosquito nets in exposed sleeping areas.
+
+Personnel briefed to check for ticks and other arthropods and evidence of bites throughout activity.
+
+Full length clothing worn.
+
+Insect repellant available and used regularly.`,
+                                    },
+                                    {
+                                        name: 'Thunderstorm asthma',
+                                        initL: 1,
+                                        initC: 'E',
+                                        plan: `Nominal roll reviewed to identify any members with asthma as a listed condition;
+
+OIC to monitor weather four days in the lead up to the activity;
+
+OIC to communicate with parents/guardians if concern exists regardinfg potential for Thunderstorm Asthma;
+
+OIC to consider cancellation of activity based on authority alerts.`,
+                                    },
+                                    {
+                                        name: 'UV Radiation (Sun exposure)',
+                                        initL: 5,
+                                        initC: 'B',
+                                        plan: `Shelter made available for eating meals and taking breaks.
+
+Reorganise outdoor work if possible so that workers carry out alternative tasks, or work
+
+in shade, when the sun is most intense, that is, between 10.00 am and 2.00 pm (11.00 am and 3.00 pm when there is daylight saving).
+
+UV Index monitored to determine required PPE (exceeding UV 3 or above).
+
+Cover as much of body as possible with clothing.
+
+Ensure provision of SPF 30 or higher broad spectrum sunscreen to all members.
+
+Ensure application of sunscreen at least 20 minutes before sun exposure.
+
+Ensure re-application of sunscreen every two hours when outdoors or more if perspiring or swimming.
+Ensure suitable broad-brim head-wear is worn where practicable.
+
+Provide workers with personal protective clothing (wide brim hat, long-sleeved collared shirt, long pants, sunglasses).`,
+                                    },
+                                    {
+                                        name: 'Hot Weather (risk of heat injury)',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Where practicable substitute time of work to cooler parts of the day.
+
+Where practicable substitute location of work to inside.
+
+Shelter made available for eating meals and taking breaks.
+
+Provide workspaces with air-conditioning.
+
+Plan and reorganise outdoor work so that workers carry out alternative tasks, or work in shade, when the sun is most intense, that is, between 10.00 am and 2.00 pm (11.00 am and 3.00 pm when there is daylight saving).
+
+All personnel briefed at commencement of activity to consume adequate amounts of water.
+
+Directing Staff to monitor adequate daily water consumption (Girls aged 13 = 1.4L, Boys aged 13 = 1.6L, Girls aged 14-18 = 1.6L, Boys aged 14-18 = 1.6L, Women = 2.1L, Men = 2.6L).
+
+Additional water provided where physical exertion is planned.
+
+Determine appropriate clothing/uniform to be worn based on the forecast temperature prior to the commencement of activity and communicate to personnel. 
+
+Determine appropriate equipment required, including sleeping equipment based on the forecast temperature prior to the commencement of the activity and communicate to personnel.`,
+                                    },
+                                    {
+                                        name: 'Cold Weather (risk of Hypothermia/Cold Injury)',
+                                        initL: 4,
+                                        initC: 'E',
+                                        plan: `Where practicable substitute time of work to warmer parts of the day;
+
+Where practicable substitute location of work to inside;
+
+Shelter made available for eating meals and taking breaks;
+
+Provide workspaces with heating;
+
+Weather monitored within four days of activity commencement with consideration given to temperature and wind-chill effect;
+
+OIC to consider cancellation or modification of activity if weather conditions are determined as severe by Bureau of Meteorology in the context of the activity;
+
+Plan and reorganise outdoor work so that workers carry out alternative tasks, or work in warmer areas;
+
+All personnel briefed at commencement of activity to ensure warm clothing is worn as required;
+
+Directing Staff to monitor members for affects of cold weather;
+
+Additional warm clothing and heating options available;
+
+Clothing checks carried out by Directing Staff prior to departure to activity area; 
+
+Emergency blankets carried in first aid kit and readily available; 
+
+Hot water and/or drinks made available;
+
+Determine appropriate clothing/uniform to be worn based on the forecast temperature prior to the commencement of activity and communicate to personnel;
+
+If operating in Alpine/Sub-zero environments (i.e. snow), alternative clothing is to be worn that does not contain cotton;
+
+Determine appropriate equipment required, including sleeping equipment based on the forecast temperature prior to the commencement of the activity and communicate to personnel.`,
+                                        resL: 1,
+                                        resC: 'C',
+                                    },
+                                    {
+                                        name: 'Moving Vehicles (i.e. Traffic)',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `All members to cross roads using over or under pass where available;  
+
+All members to cross roads using designated crossings where available; 
+
+All members to cross roads at right angles;  
+
+Directing Staff to supervise cadet crossing of roads;
+
+When marching in a flight on a road front right and rear right markers to wear hi-visibility vests;
+
+When marching, Supernumeraries and Flight Commanders to wear hi-visibility vests;  
+
+Individuals and pairs to use marked footpaths where available.`,
+                                    },
+                                    {
+                                        name: 'Hazardous Topography',
+                                        initL: 3,
+                                        initC: 'B',
+                                        plan: `Topography considered during site selection; 
+
+Appropriate footwear selection for type of topography and activity; 
+
+Route selection considered and safest route chosen;  
+
+Footwear guide provided to attending members.`,
+                                    },
+                                    {
+                                        name: 'Campfire',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Camp fires are not to be lit on days declared as Total Fire Ban (TFB) days as declared by State/Territory emergency services;
+
+Where practicable, subtitute camp fires with alternative heating methods;
+
+Use a built fireplace where provided, or dig a 30cm deep trench to house the fire and prevent embers from flying out;
+
+Create a border around the fire using large rocks;
+
+Light the campfire in a cleared area.  Remove branches, leaves and twigs from the ground and above the flames to create a clearing of three (3) metres around the fire;
+
+Ensure the fire is three (3) metres away from tents and other outdoor equipment stored well away, especially flammable items such as gas cylinders and fuel cans;
+
+Do not use flammable liquid or fuel such as petrol or diesel on a fire even when attempting to light;
+
+Keep the fire big enough for cooking and/or warmth and no bigger;
+
+Fire is to be attended at all times by a responsible person;
+
+Fire is to be extinguished completely with water, not soil;
+
+Extinguish fire at night, unless a fir supervisor system is in place (i.e. picket);
+
+Keep fire-fighting equipment ready and accesible near the fire (e.g. bucket of water, knapsack, fire rake, fire extinguisher, fire blanket, etc.);`,
+                                    },
+                                    {
+                                        name: 'Flood',
+                                        initL: 3,
+                                        initC: 'E',
+                                        plan: `Topography and historic flood information considered when selecting activity site;  
+
+Weather monitored four days prior to commencement of activity;  
+
+If severe weather warnings or heavy rain with flood warnings are issued by the Bureau of Meteorology covering the date(s) of the activity then activity is to be relocated or cancelled.`,
+                                    },
+                                    {
+                                        name: 'Severe Weather (storm, hail, lightning, etc.)',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Cancel activity if severe weather warning issued by the Bureau of Meteorology is forecast to impact the area of operations.
+
+If practicable, relocate activity if severe weather warning issued by the Bureau of Meteorology is forecast to impact the area of operations.
+
+Monitor weather conditions in the 48 hours leading up to the activity.  If severe weather if forecast, conduct activity indoors or in a suitably sheltered location.
+
+Ensure physical and suitable shelter is available for the number of personnel.
+
+Evacuation plan formulated and enacted as deemed necessary.
+
+Ensure sufficient wet and/or cold weather clothing is available for issue.`,
+                                    },
+                                    {
+                                        name: 'Contaminated water',
+                                        initL: 4,
+                                        initC: 'B',
+                                        plan: `Replace water collected from sources where quality is unknown with bottled or potable water. 
+
+For survival, treat water using purification methods (i.e. filter, boil) before use.
+
+Brief personnel that water collected from sources where quality is unknown is to be replaced with either bottled or potable water.
+
+Use water purification tablets where deemed necessary.`,
+                                    },
+                                    {
+                                        name: 'Bushfire',
+                                        initL: 1,
+                                        initC: 'E',
+                                        plan: `Weather conditions monitored by OIC in the four days leading to the activity;  
+
+Australian Fire Danger Rating System (AFDRS) monitored for the activity location/region in the four days leading to the activity (Bureau of Meteorology and/or State/Territory Emergency Services); 
+
+Activities in known or designated high risk bushfire areas are not to proceed on days of EXTREME or CATASROPHIC as designated by the AFDRS.
+
+Consideration given to time of year activity being held (i.e. Fire Danger Period) with consideration given to substituting time of year of activity; 
+ 
+Unit to communicate with local Environmental agency (i.e. Parks, Dept of Environment, etc.) to gain local understanding of risk of bushfire in the area within four days of activity commencement;  
+
+Emergency evacuation plan developed and communicated;`,
+                                    },
+                                    {
+                                        name: 'Rips in surf',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Qualified Supervisor/Provider monitoring swimming activities;
+
+Swimming only between flags on patrolled beach;
+
+Members briefed on actions if caught in a rip.`,
+                                    },
+                                    {
+                                        name: 'Envenomation (Snake bite, spider bite, bee/wasp sting, marine sting)',
+                                        initL: 3,
+                                        initC: 'D',
+                                        plan: `Site considered in relation to type of animals which may be present that have the potential to cause harm;
+
+Local agencies consulted with to identify potentially harmful animals in planned area of operation;
+
+Members with known animal bite/sting allergies identified during activity planning;
+
+For identified members, Australasian Society of Clinical Immunology and Allergy (ASCIA) Action Plan received by Directing Staff at commencement of activity and one copy kept on individual (no form = no attendance);
+
+Individual medication confirmed with person by Directing Staff at commencement of activity (no medication = no attendance);
+
+Directing Staff First Aid Qualified;
+
+Medical evacuation plan developed and communicated to all Directing Staff;
+
+Appropriate clothing selection made and communicated prior to commencement of activity (i.e. full body covered, gaiters, etc.);
+
+Where the risk of venomous snake bite and/or funnel web spide exists, first aid kits are to have an appropriate number of SMART bandages in them;
+
+ADF guide to venemous snakes and spiders available on activity.`,
+                                    },
+                                    {
+                                        name: 'Water Hazard(s) (Risk of Drowning)',
+                                        initL: 2,
+                                        initC: 'D',
+                                        plan: `Adequately trained and competent supervisor(s);
+
+First Aid Officer Appointed;
+
+Competent Life Guards Nominated and Posted;
+
+Limited competency swimmers identified and extra supervision exercised as required;
+
+Limited competency swimmers identified and personal flotation devices used as required;
+
+Scope of activities limited, (e.g. Diving and Running prohibited);
+
+No individual swimming - must be in a group with mutual monitoring;
+
+Safe swimming area defined and policed;
+
+Restricted entry to areas of increased risk, or that require higher levels of swimming competency, (e.g. slides, diving boards, deep water);
+
+Swimming area matches abilities of swimmers;`,
+                                    },
+                                    {
+                                        name: 'Uneven surfaces (slips, trips, falls)',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Area of Operations inspected for uneven surfaces;
+
+Alternate Area to be substituted where practicable;
+
+Uneven surfaces highlighted with signing and isolated with barriers where practicable;
+
+Slips, Trips, Falls covered in Safety Brief;
+
+All personnel issued appropriate footwear, or briefed on required footwear;
+
+Movement of personnel near hazardous areas monitored.`,
+                                    },
+                                    {
+                                        name: 'Dangerous Trees',
+                                        initL: 2,
+                                        initC: 'E',
+                                        plan: `Do not set up camp directly under large gum trees which may drop large branches;
+
+Outdoor activities to be relocated in areas away from dangerous trees;
+
+Trees visually inspected by Directing Staff to look for damage, cracks, hollow, fire impact, loose roots;
+
+Activity cancelled if wind speed exceeds Beaufort Scale 5 (Light Breeze), that is forecast greater than 29-38 km/h wind speeds;
+
+Weather monitored by OIC for four days leading up to activity, noting any severe weather or wind warning issued by the Bureau of Meteorolory;
+ 
+Most recent Arborist's report obtained for annual inspection undertaken if activity is being conducted on other organisation land (i.e. Scouts) to determine location of dangerous trees or other noted tree-related risks.  
+
+Look-up, look-down, look-around principal communicated and adopted during activities conducted within vicinity of large trees.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Hazardous Substances',
+                                hazards: [
+                                    {
+                                        name: 'Dust (from tools)',
+                                        initL: 3,
+                                        initC: 'B',
+                                        plan: `Workshop ventilation adequate, assessed and to be confirmed suitable for safe work;
+
+Suitable face masks and/or respirators to be made available for use during dust producing tasks;
+
+Use of PPE enforced by supervisors.`,
+                                    },
+                                    {
+                                        name: 'Fuel Spill',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Refueling conducted IAW Manufacturer's guidelines;
+
+Funnels used when refueling;
+
+Correct PPE worn when refueling;
+
+Area well ventilated;
+
+Spill kit available and used;
+
+All persons handling fuel completed the 'handling and decanting small quantities of fuel' learning package;
+
+Safety Officer has completed 'Hazardous Chemicals Awareness' learning package.`,
+                                    },
+                                    {
+                                        name: 'Hazardous Substance Exposure',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Hazardous Substances Identified and verified on ChemAlert // 
+ Only Hazardous Substances approved on ChemAlert to be used //  Quantities stored and transported in accordance with manufacturer's requirements and Safety Data Sheets //  All containers correctly labelled //  Activity Safety Officer has completed Hazardous Chemicals Awareness E-Learning module on Cadetnet //  All personnel briefed on Hazardous Substances handling, storage, transport and use //  All persons handling or working near Hazardous Substances thoroughly trained and deemed competent prior to use // 
+ Exposure limitation plan developed using Hierarchy of Controls and techniques implemented, (Elimination, Substitution, Isolation, Engineering, Administrative, PPE) // 
+ Adequate PPE IAW Manufacturer's SDS to be used when handling Hazardous Substances //  Spills dealt with IAW SDS // Consideration to be given to alerting emergency services, and/or Base Environmental Safety Officer //  Disposal of Hazardous Substances to occur IAW SDS // 
+Physical copies of Safety Data Sheets readily available to provide to medical professionals as required.`,
+                                    },
+                                ],
+                            },
+                            {
+                                name: 'Firearms / Live Firing',
+                                hazards: [
+                                    {
+                                        name: 'Exposure to hazard chemicals',
+                                        initL: 3,
+                                        initC: 'C',
+                                        plan: `Personnel involved in using hazardous chemicals trained in use, training recorded.
+Correct procedures recorded and regularly reviewed.
+Correct PPE available and use is policed.
+Trained staff member or authorised cadet supervises procedures.
+Spill procedures recorded and all members involved aware of procedures.
+Spill response equipment available and regularly checked for serviceability.
+First aid available for splash incidents.
+SDS for substances held in easily accessed location and regularly updated.`,
+                                    },
+                                    {
+                                        name: 'Firearm Noise',
+                                        initL: 4,
+                                        initC: 'B',
+                                        plan: `Hearing protection PPE to be made available and used by all members participating in shoot;
+
+Use of PPE enforced by Supervisors and RCO;
+
+Aural PPE NRR = 21 or higher.`,
+                                    },
+                                    {
+                                        name: 'Ejected shells (risk of eye injury)',
+                                        initL: 2,
+                                        initC: 'B',
+                                        plan: `Eye protection made available and used by all participants in activity which meets Australian Standard AS1337.1.`,
+                                    },
+                                    {
+                                        name: 'Lasers (Eye injury from WTSS)',
+                                        initL: 2,
+                                        initC: 'A',
+                                        plan: `All members briefed on the hazard and risk of lasers used in WTSS system;
+
+Laser safety enforced during activity through adequate and qualified supervision.`,
+                                    },
+                                    {
+                                        name: 'Firearm Malfunction (Risk of injury)',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `All firearms to have a current Certificate of Serviceability;
+
+All Directing Staff handling weapons are appropriately trained;
+
+All participants instructed on their immediate action and stoppage drills in the event of a malfunction;
+
+Firearms cleaned, stored and maintained IAW manufacturer's recommendations;`,
+                                    },
+                                    {
+                                        name: 'Uncontrolled Firearm Discharge',
+                                        initL: 2,
+                                        initC: 'D',
+                                        plan: `All participants to be qualified in FTE before participating in the activity;
+
+All participants supervised by qualified personnel at the ratio mandated in AAFC Range SOPs;
+
+Firearms and bolts separated until firearms are pointing down-range at the firing point;`,
+                                    },
+                                    {
+                                        name: 'Firearms lost/stolen during transit',
+                                        initL: 1,
+                                        initC: 'C',
+                                        plan: `Firearm movement plan current and authorised IAW with DSM;
+
+Sufficient personnel and vehicles available and utilised IAW movement plan;
+
+Firearms transported in seperate vehicles from ammunition IAW promulgated Regulations;
+
+Firearms accounted for on arrival at range;
+
+Firearms accounted for prior to departure from the range;
+
+Firearms accounted for upon return to the armoury;
+
+Communications tested, and maintained between vehicles during movement;
+
+Readily accessible communication, and contact numbers, for Service Police or Civilian Police if security is compromised (lost/stolen firearm);
+
+In the event of a mishap with a vehicle during transit, vehicle to be Service Police or Civilian Police are to be immediately contacted, and the vehicle guarded until alternative transport arrives.`,
+                                    },
+                                    {
+                                        name: 'Procedural failures by personnel operating firearms',
+                                        initL: 2,
+                                        initC: 'D',
+                                        plan: `All participants are to be qualified in FTE, and records confirmed prior to the activity;
+
+For F88 all participants are to have completed Weapons Training Test (WTT), and records confirmed prior to the activity;
+
+Safety brief to be conducted prior to the activity IAW AAFC SOPs and Range Regulations;
+
+Activity policed by supervisors, including monitoring spectators;
+
+Defined supervisory ratios to be complied with IAW policy.`,
+                                    },
+                                    {
+                                        name: 'Range not meeting required standards',
+                                        initL: 2,
+                                        initC: 'C',
+                                        plan: `Prior to activity, confirm that the facility is a Defence Approved Range;
+
+Confirm that the facility holds a current State Certificate;
+
+RCO to inspect range for hazards creating issues with the facility before the commencement of live firing.`,
+                                    },
+                                    {
+                                        name: 'Unauthorised persons accessing AAFC controlled firearms (Security Breach)',
+                                        initL: 1,
+                                        initC: 'E',
+                                        plan: `Firearm movement plan developed, current and authorised IAW DSM;
+
+Sufficient personnel and vehicles available and utilised IAW movement plan;
+
+Firearms transported in seperate vehicles from bolts/ammunition IAW promulgated Regulations;
+
+Communications tested, and maintained between vehicles during movement;
+
+When not in use firearms locked in secure storage, including spares or where secure storage is not immediately availability, picketted by approved personnel;
+
+Readily accessible communication, and contact numbers, for Service Police or Civilian Police if security is compromised.`,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                },
+            ];
+
+            /* =========================================================================
+   STORAGE
+   ========================================================================= */
+            const IDX_KEY = 'ramp-index';
+
+            async function loadIndex() {
+                try {
+                    const res = await window.localStorage.getItem(
+                        IDX_KEY,
+                        false,
+                    );
+                    return res ? JSON.parse(res.value) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+            async function saveIndex(index) {
+                try {
+                    await window.localStorage.setItem(
+                        IDX_KEY,
+                        JSON.stringify(index),
+                        false,
+                    );
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            async function loadRampFromStorage(id) {
+                try {
+                    const res = await window.localStorage.getItem(
+                        'ramp-' + id,
+                        false,
+                    );
+                    return res ? JSON.parse(res) : null;
+                } catch (e) {
+                    return null;
+                }
+            }
+            async function saveRampToStorage(ramp) {
+                try {
+                    await window.localStorage.setItem(
+                        'ramp-' + ramp.id,
+                        JSON.stringify(ramp),
+                        false,
+                    );
+                    return true;
+                } catch (e) {
+                    console.error(e);
+                    return false;
+                }
+            }
+            async function deleteRampFromStorage(id) {
+                try {
+                    await window.storage.delete('ramp-' + id, false);
+                } catch (e) {
+                    /* ignore */
+                }
+            }
+
+            /* =========================================================================
+   STATE & HELPERS
+   ========================================================================= */
+            let state = {
+                view: 'home', // 'home' | 'editor'
+                ramp: null,
+                index: [], // [{id, name, updatedAt}]
+            };
+            let saveTimer = null;
+
+            function uid(prefix) {
+                return (
+                    prefix +
+                    '_' +
+                    Date.now().toString(36) +
+                    Math.random().toString(36).slice(2, 7)
+                );
+            }
+
+            function blankRamp() {
+                return {
+                    id: uid('ramp'),
+                    name: '',
+                    templateId: null,
+                    templateData: null,
+                    details: {
+                        owner: '',
+                        activityType: '',
+                        location: '',
+                        startDate: '',
+                        endDate: '',
+                        preparedBy: '',
+                        consultedWith: '',
+                        approvedBy: '',
+                    },
+                    context: '',
+                    categories: [],
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                };
+            }
+
+            function rampFromTemplate(tpl) {
+                const ramp = blankRamp();
+                ramp.name = tpl.name;
+                ramp.templateId = tpl.id;
+                ramp.templateData = {
+                    context: tpl.data.context || '',
+                    categories: (tpl.data.categories || []).map((cat) => {
+                        const templateCategoryId = uid('tcat');
+                        return {
+                            templateCategoryId,
+                            name: cat.name,
+                            hazards: (cat.hazards || []).map((h) => ({
+                                templateHazardId: uid('thaz'),
+                                name: h.name,
+                                initL: h.initL,
+                                initC: h.initC,
+                                plan: h.plan || '',
+                                locked: h.locked || false,
+                            })),
+                        };
+                    }),
+                };
+                ramp.context = ramp.templateData.context;
+                ramp.categories = ramp.templateData.categories.map((cat) => ({
+                    id: uid('cat'),
+                    templateCategoryId: cat.templateCategoryId,
+                    name: cat.name,
+                    hazards: cat.hazards
+                        .filter((h) => h.locked)
+                        .map((h) => ({
+                            id: uid('haz'),
+                            templateHazardId: h.templateHazardId,
+                            name: h.name,
+                            initL: h.initL,
+                            initC: h.initC,
+                            plan: h.plan || '',
+                            resL: null,
+                            resC: null,
+                            locked: h.locked,
+                        })),
+                }));
+                return ramp;
+            }
+
+            function newHazard() {
+                return {
+                    id: uid('haz'),
+                    name: '',
+                    initL: 1,
+                    initC: 'A',
+                    plan: '',
+                    resL: 1,
+                    resC: 'A',
+                    locked: false,
+                };
+            }
+            function newCategory() {
+                return { id: uid('cat'), name: 'New Category', hazards: [] };
+            }
+
+            function findCategory(catId) {
+                return state.ramp.categories.find((c) => c.id === catId);
+            }
+            function findHazard(catId, hazId) {
+                const cat = findCategory(catId);
+                return cat ? cat.hazards.find((h) => h.id === hazId) : null;
+            }
+
+            function categoryRisk(cat) {
+                let best = null;
+                cat.hazards.forEach((h) => {
+                    const r = getRisk(h.resL, h.resC);
+                    if (
+                        r.level &&
+                        (!best ||
+                            RISK_LEVELS[r.level].order >
+                                RISK_LEVELS[best].order)
+                    )
+                        best = r.level;
+                });
+                return best;
+            }
+            function categoryHasLockedHazards(cat) {
+                return cat.hazards.some((h) => h.locked);
+            }
+            function findTemplateCategory(cat) {
+                const templateCats = state.ramp.templateData?.categories || [];
+                if (!templateCats.length) return null;
+                let match = templateCats.find(
+                    (tc) => tc.templateCategoryId === cat.templateCategoryId,
+                );
+                if (!match) {
+                    match = templateCats.find((tc) => tc.name === cat.name);
+                }
+                return match || null;
+            }
+            function getMissingTemplateHazards(cat) {
+                const templateCat = findTemplateCategory(cat);
+                if (!templateCat) return [];
+                return templateCat.hazards.filter(
+                    (th) =>
+                        !cat.hazards.some(
+                            (h) => h.templateHazardId === th.templateHazardId,
+                        ),
+                );
+            }
+            function restoreTemplateHazard(catId, templateHazardId) {
+                const cat = findCategory(catId);
+                const templateCat = cat ? findTemplateCategory(cat) : null;
+                if (!cat || !templateCat) return;
+                const th = templateCat.hazards.find(
+                    (h) => h.templateHazardId === templateHazardId,
+                );
+                if (!th) return;
+
+                const existingTemplateHazardIds = cat.hazards.map(
+                    (h) => h.templateHazardId,
+                );
+                const insertIndex = templateCat.hazards.findIndex(
+                    (h) => h.templateHazardId === templateHazardId,
+                );
+                const beforeCount = templateCat.hazards
+                    .slice(0, insertIndex)
+                    .filter((h) =>
+                        existingTemplateHazardIds.includes(h.templateHazardId),
+                    ).length;
+
+                cat.hazards.splice(beforeCount, 0, {
+                    id: uid('haz'),
+                    templateHazardId: th.templateHazardId,
+                    name: th.name,
+                    initL: th.initL,
+                    initC: th.initC,
+                    plan: th.plan || '',
+                    resL: null,
+                    resC: null,
+                    locked: th.locked || false,
+                });
+            }
+            function overallRisk() {
+                let best = null;
+                (state.ramp.categories || []).forEach((cat) => {
+                    const cr = categoryRisk(cat);
+                    if (
+                        cr &&
+                        (!best ||
+                            RISK_LEVELS[cr].order > RISK_LEVELS[best].order)
+                    )
+                        best = cr;
+                });
+                return best;
+            }
+            function riskBadgeFromLevel(level, size) {
+                if (!level)
+                    return `<span class="risk-badge${size ? ' size-' + size : ''}">—</span>`;
+                return `<span class="risk-badge risk-${level}${size ? ' size-' + size : ''}">${level} · ${RISK_LEVELS[level].label}</span>`;
+            }
+
+            /* =========================================================================
+   SCHEDULED SAVE
+   ========================================================================= */
+            function scheduleSave() {
+                setSaveStatus('Editing…');
+                if (saveTimer) clearTimeout(saveTimer);
+                saveTimer = setTimeout(doSave, 800);
+            }
+            async function doSave() {
+                if (!state.ramp) return;
+                setSaveStatus('Saving…');
+                state.ramp.updatedAt = Date.now();
+                const ok = await saveRampToStorage(state.ramp);
+                // update index
+                const idx = state.index.find((r) => r.id === state.ramp.id);
+                const entry = {
+                    id: state.ramp.id,
+                    name: state.ramp.name || 'Untitled RAMP',
+                    updatedAt: state.ramp.updatedAt,
+                };
+                if (idx) Object.assign(idx, entry);
+                else state.index.push(entry);
+                await saveIndex(state.index);
+                setSaveStatus(ok ? 'Saved' : 'Save failed');
+            }
+            function setSaveStatus(text) {
+                const el = document.getElementById('save-status');
+                if (el) el.textContent = text;
+            }
+
+            /* =========================================================================
+   RENDER: SHARED PIECES
+   ========================================================================= */
+            function renderHeroMatrix() {
+                // rows = likelihood 5 -> 1, cols = consequence A -> E
+                let rows = '';
+                for (let l = 5; l >= 1; l--) {
+                    let cells = `<th class="axis">${l}</th>`;
+                    CONSEQUENCES.forEach((c) => {
+                        const level = RISK_MATRIX[l][c.v];
+                        cells += `<td class="cell risk-${level}">${c.v}${l}</td>`;
+                    });
+                    rows += `<tr>${cells}</tr>`;
+                }
+                const header = `<tr><th class="corner"></th>${CONSEQUENCES.map((c) => `<th>${c.v}</th>`).join('')}</tr>`;
+                return `<table class="matrix-table">${header}${rows}</table>`;
+            }
+
+            function renderLegend() {
+                return Object.entries(RISK_LEVELS)
+                    .map(
+                        ([code, info]) =>
+                            `<div class="row"><span class="swatch risk-${code}"></span><span>${code} — ${info.label}</span></div>`,
+                    )
+                    .join('');
+            }
+
+            /* =========================================================================
+   RENDER: HOME
+   ========================================================================= */
+            function renderHome() {
+                const cards = TEMPLATES.map(
+                    (t) => `
+    <div class="template-card" data-action="new-from-template" data-template-id="${t.id}">
+      <h3>${escapeHTML(t.name)}</h3>
+      <p>${escapeHTML(t.description)}</p>
+      <div class="meta">${t.data.categories.length} categories · ${t.data.categories.reduce((n, c) => n + c.hazards.length, 0)} hazards</div>
+    </div>
+  `,
+                ).join('');
+
+                const blankCard = `
+    <div class="template-card blank" data-action="new-blank">
+      <h3>+ Start blank</h3>
+      <p>Build a RAMP from scratch with no pre-filled hazards.</p>
+    </div>`;
+
+                let savedHTML = '';
+                if (state.index.length === 0) {
+                    savedHTML = `<div class="saved-list"><div class="empty-note">No saved RAMPs yet. Start one above — it will be saved automatically.</div></div>`;
+                } else {
+                    const rows = [...state.index]
+                        .sort((a, b) => b.updatedAt - a.updatedAt)
+                        .map(
+                            (r) => `
+        <div class="saved-row">
+          <span class="name" data-action="open-ramp" data-ramp-id="${r.id}">${escapeHTML(r.name || 'Untitled RAMP')}</span>
+          <span class="date">updated ${formatDate(r.updatedAt)}</span>
+          <button class="btn btn-sm btn-danger" data-action="delete-ramp" data-ramp-id="${r.id}">Delete</button>
+        </div>`,
+                        )
+                        .join('');
+                    savedHTML = `<div class="saved-list">${rows}</div>`;
+                }
+
+                return `
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Risk Assessment &amp; Management Plan</div>
+        <h1>Build, score and print a RAMP in minutes.</h1>
+        <p>Start from a pre-built template of common AAFC hazards, or start blank. Likelihood × consequence is scored automatically against the standard SRM risk matrix — add your own hazards, write your control plans, and print or save the result as a PDF.</p>
+      </div>
+      <div class="matrix-wrap">${renderHeroMatrix()}</div>
+    </div>
+
+    <div class="section-label">Start a new RAMP</div>
+    <div class="template-grid">${cards}${blankCard}</div>
+
+    <div class="section-label">Saved RAMPs</div>
+    ${savedHTML}
+
+    <div style="margin-top:18px;">
+      <button class="btn" data-action="import-json">Import RAMP from JSON</button>
+    </div>
+  `;
+            }
+
+            /* =========================================================================
+   RENDER: EDITOR
+   ========================================================================= */
+            function renderHazard(cat, h, stagePrefix) {
+                return `
+    <div class="hazard" data-cat-id="${cat.id}" data-haz-id="${h.id}">
+      <div class="hazard-head">
+        <input class="haz-name" type="text" placeholder="Hazard name" value="${escapeAttr(h.name)}"
+               data-field="name" data-cat-id="${cat.id}" data-haz-id="${h.id}">
+        <button class="btn btn-sm btn-danger" data-action="delete-hazard" data-cat-id="${cat.id}" data-haz-id="${h.id}"${h.locked ? ' disabled' : ''}>Remove</button>
+      </div>
+
+      <div class="risk-row">
+        <div class="stage-label">Initial risk (before controls)${h.locked ? ' · from template' : ''}</div>
+        <div class="field">
+          <label>Likelihood</label>
+          <select data-field="initL" data-cat-id="${cat.id}" data-haz-id="${h.id}" ${h.locked ? 'disabled' : ''}>
+            ${likelihoodOptions(h.initL)}
+          </select>
+        </div>
+        <div class="field">
+          <label>Consequence</label>
+          <select data-field="initC" data-cat-id="${cat.id}" data-haz-id="${h.id}" ${h.locked ? 'disabled' : ''}>
+            ${consequenceOptions(h.initC)}
+          </select>
+        </div>
+        <div class="badge-wrap" data-risk="initial" data-haz-id="${h.id}">${riskBadgeHTML(h.initL, h.initC)}</div>
+      </div>
+      ${h.locked ? `<div class="lock-note">🔒 Initial likelihood/consequence is fixed by the template. Add a new hazard if you need a fully editable entry.</div>` : ''}
+
+      <div class="field" style="margin-top:10px;">
+        <label>Risk treatment / control plan</label>
+        <textarea data-field="plan" data-cat-id="${cat.id}" data-haz-id="${h.id}" placeholder="Describe the controls in place to manage this hazard…">${escapeHTML(h.plan)}</textarea>
+      </div>
+
+      <div class="risk-row" style="margin-top:10px;">
+        <div class="stage-label">Residual risk (after controls)</div>
+        <div class="field">
+          <label>Likelihood</label>
+          <select data-field="resL" data-cat-id="${cat.id}" data-haz-id="${h.id}">
+            ${likelihoodOptions(h.resL)}
+          </select>
+        </div>
+        <div class="field">
+          <label>Consequence</label>
+          <select data-field="resC" data-cat-id="${cat.id}" data-haz-id="${h.id}">
+            ${consequenceOptions(h.resC)}
+          </select>
+        </div>
+        <div class="badge-wrap" data-risk="residual" data-haz-id="${h.id}">${riskBadgeHTML(h.resL, h.resC)}</div>
+      </div>
+    </div>
+  `;
+            }
+
+            function renderCategory(cat) {
+                const hazardsHTML = cat.hazards.length
+                    ? cat.hazards.map((h) => renderHazard(cat, h)).join('')
+                    : `<div class="no-hazards">No hazards in this category yet.</div>`;
+                const missingTemplateHazards = getMissingTemplateHazards(cat);
+                const restoreHTML = missingTemplateHazards.length
+                    ? `<div class="restore-row"><div class="restore-note">${missingTemplateHazards.length} template hazard${missingTemplateHazards.length === 1 ? '' : 's'} available:</div>${missingTemplateHazards
+                          .map(
+                              (th) =>
+                                  `<button class="btn btn-sm" data-action="restore-template-hazard" data-cat-id="${cat.id}" data-template-hazard-id="${th.templateHazardId}">Restore ${escapeHTML(th.name)}</button>`,
+                          )
+                          .join('')}</div>`
+                    : '';
+                const risk = categoryRisk(cat);
+                return `
+    <div class="category" data-cat-id="${cat.id}">
+      <div class="cat-head">
+        <input class="cat-name" type="text" value="${escapeAttr(cat.name)}" data-field="catname" data-cat-id="${cat.id}" placeholder="Category name">
+        <span class="risk-badge${risk ? ' risk-' + risk : ''}" data-cat-risk="${cat.id}">${risk ? risk + ' · ' + RISK_LEVELS[risk].label : 'No hazards'}</span>
+        <button class="btn btn-sm btn-danger" data-action="delete-category" data-cat-id="${cat.id}"${categoryHasLockedHazards(cat) ? ' disabled' : ''}>Remove category</button>
+      </div>
+      <div class="cat-body">
+        ${hazardsHTML}
+        ${restoreHTML}
+        <div class="add-row">
+          <button class="btn btn-sm" data-action="add-hazard" data-cat-id="${cat.id}">+ Add hazard</button>
+        </div>
+      </div>
+    </div>
+  `;
+            }
+
+            function renderEditor() {
+                const r = state.ramp;
+                const d = r.details;
+                const categoriesHTML = r.categories.length
+                    ? r.categories.map(renderCategory).join('')
+                    : `<div class="app-empty"><h2>No hazard categories yet</h2><p>Add a category to start listing hazards, controls and risk ratings.</p></div>`;
+
+                const overall = overallRisk();
+
+                return `
+    <div class="editor-grid">
+      <div>
+        <div class="card">
+          <h2>Activity details</h2>
+          <div class="field-grid">
+            <div class="field"><label>Activity type</label><input type="text" data-field="details.activityType" value="${escapeAttr(d.activityType)}"></div>
+            <div class="field"><label>Location</label><input type="text" data-field="details.location" value="${escapeAttr(d.location)}"></div>
+            <div class="field"><label>Start date</label><input type="date" data-field="details.startDate" value="${escapeAttr(d.startDate)}"></div>
+            <div class="field"><label>End date</label><input type="date" data-field="details.endDate" value="${escapeAttr(d.endDate)}"></div>
+            <div class="field"><label>Owner</label><input type="text" data-field="details.owner" value="${escapeAttr(d.owner)}"></div>
+            <div class="field"><label>Prepared by</label><input type="text" data-field="details.preparedBy" value="${escapeAttr(d.preparedBy)}"></div>
+            <div class="field"><label>Consulted with</label><input type="text" data-field="details.consultedWith" value="${escapeAttr(d.consultedWith)}"></div>
+            <div class="field"><label>Approved by</label><input type="text" data-field="details.approvedBy" value="${escapeAttr(d.approvedBy)}"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Context / assumptions</h2>
+          <div class="field">
+            <textarea data-field="context" style="min-height:120px;" placeholder="Describe the activity, key assumptions, and any planning notes…">${escapeHTML(r.context)}</textarea>
+          </div>
+        </div>
+
+        <div class="section-label">Hazard categories</div>
+        ${categoriesHTML}
+        <button class="btn" data-action="add-category">+ Add category</button>
+      </div>
+
+      <div class="side">
+        <div class="card">
+          <h2>Overall risk</h2>
+          <div class="overall-risk">
+            <span class="lbl">Activity risk</span>
+            <span id="overall-risk-badge">${riskBadgeFromLevel(overall, 'lg')}</span>
+          </div>
+          <div class="mini-matrix">
+            ${renderMiniMatrix()}
+          </div>
+          <div class="legend">${renderLegend()}</div>
+        </div>
+      </div>
+    </div>
+  `;
+            }
+
+            function renderMiniMatrix() {
+                let rows = '';
+                for (let l = 5; l >= 1; l--) {
+                    let cells = `<th>${l}</th>`;
+                    CONSEQUENCES.forEach((c) => {
+                        const level = RISK_MATRIX[l][c.v];
+                        cells += `<td class="risk-${level}">${c.v}${l}</td>`;
+                    });
+                    rows += `<tr>${cells}</tr>`;
+                }
+                const header = `<tr><th></th>${CONSEQUENCES.map((c) => `<th>${c.v}</th>`).join('')}</tr>`;
+                return `<table>${header}${rows}</table>`;
+            }
+
+            /* =========================================================================
+   MAIN RENDER
+   ========================================================================= */
+            function render() {
+                const page = document.getElementById('page');
+                const titleInput = document.getElementById('ramp-title-input');
+                const exportBtn = document.getElementById('btn-export');
+                const printBtn = document.getElementById('btn-print');
+
+                if (state.view === 'home') {
+                    titleInput.classList.add('hidden');
+                    exportBtn.classList.add('hidden');
+                    printBtn.classList.add('hidden');
+                    setSaveStatus('');
+                    page.innerHTML = renderHome();
+                } else {
+                    titleInput.classList.remove('hidden');
+                    exportBtn.classList.remove('hidden');
+                    printBtn.classList.remove('hidden');
+                    titleInput.value = state.ramp.name || '';
+                    page.innerHTML = renderEditor();
+                }
+            }
+
+            /* =========================================================================
+   TARGETED UPDATES (avoid full re-render on every keystroke)
+   ========================================================================= */
+            function refreshHazardBadges(catId, hazId) {
+                const h = findHazard(catId, hazId);
+                if (!h) return;
+                const initEl = document.querySelector(
+                    `[data-risk="initial"][data-haz-id="${hazId}"]`,
+                );
+                const resEl = document.querySelector(
+                    `[data-risk="residual"][data-haz-id="${hazId}"]`,
+                );
+                if (initEl) initEl.innerHTML = riskBadgeHTML(h.initL, h.initC);
+                if (resEl) resEl.innerHTML = riskBadgeHTML(h.resL, h.resC);
+            }
+            function refreshCategoryBadge(catId) {
+                const cat = findCategory(catId);
+                if (!cat) return;
+                const el = document.querySelector(`[data-cat-risk="${catId}"]`);
+                if (el) {
+                    const risk = categoryRisk(cat);
+                    el.className = 'risk-badge' + (risk ? ' risk-' + risk : '');
+                    el.textContent = risk
+                        ? `${risk} · ${RISK_LEVELS[risk].label}`
+                        : 'No hazards';
+                }
+            }
+            function refreshOverallBadge() {
+                const el = document.getElementById('overall-risk-badge');
+                if (el) el.innerHTML = riskBadgeFromLevel(overallRisk(), 'lg');
+            }
+
+            /* =========================================================================
+   UTILITIES
+   ========================================================================= */
+            function escapeHTML(str) {
+                return String(str ?? '').replace(
+                    /[&<>]/g,
+                    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c],
+                );
+            }
+            function escapeAttr(str) {
+                return escapeHTML(str).replace(/"/g, '&quot;');
+            }
+            function formatDate(ts) {
+                const d = new Date(ts);
+                return (
+                    d.toLocaleDateString(undefined, {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                    }) +
+                    ' ' +
+                    d.toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    })
+                );
+            }
+            function setNested(obj, path, value) {
+                const parts = path.split('.');
+                let target = obj;
+                for (let i = 0; i < parts.length - 1; i++)
+                    target = target[parts[i]];
+                target[parts[parts.length - 1]] = value;
+            }
+
+            /* =========================================================================
+   EVENT HANDLING
+   ========================================================================= */
+            const page = document.getElementById('page');
+
+            // Clicks (navigation + structural actions)
+            page.addEventListener('click', async (e) => {
+                const t = e.target.closest('[data-action]');
+                if (!t) return;
+                const action = t.dataset.action;
+
+                if (action === 'new-from-template') {
+                    const tpl = TEMPLATES.find(
+                        (x) => x.id === t.dataset.templateId,
+                    );
+                    if (!tpl) return;
+                    state.ramp = rampFromTemplate(tpl);
+                    state.view = 'editor';
+                    render();
+                    scheduleSave();
+                } else if (action === 'new-blank') {
+                    state.ramp = blankRamp();
+                    state.view = 'editor';
+                    render();
+                    scheduleSave();
+                } else if (action === 'open-ramp') {
+                    const ramp = await loadRampFromStorage(t.dataset.rampId);
+                    if (ramp) {
+                        state.ramp = ramp;
+                        state.view = 'editor';
+                        render();
+                    }
+                } else if (action === 'delete-ramp') {
+                    if (!confirm('Delete this RAMP? This cannot be undone.'))
+                        return;
+                    await deleteRampFromStorage(t.dataset.rampId);
+                    state.index = state.index.filter(
+                        (r) => r.id !== t.dataset.rampId,
+                    );
+                    await saveIndex(state.index);
+                    render();
+                } else if (action === 'add-category') {
+                    state.ramp.categories.push(newCategory());
+                    render();
+                    scheduleSave();
+                } else if (action === 'delete-category') {
+                    const cat = findCategory(t.dataset.catId);
+                    if (cat && categoryHasLockedHazards(cat)) return; // Prevent deletion of categories with template hazards
+                    if (!confirm('Remove this category and all its hazards?'))
+                        return;
+                    state.ramp.categories = state.ramp.categories.filter(
+                        (c) => c.id !== t.dataset.catId,
+                    );
+                    render();
+                    scheduleSave();
+                    refreshOverallBadge();
+                } else if (action === 'add-hazard') {
+                    const cat = findCategory(t.dataset.catId);
+                    cat.hazards.push(newHazard());
+                    render();
+                    scheduleSave();
+                } else if (action === 'delete-hazard') {
+                    const h = findHazard(t.dataset.catId, t.dataset.hazId);
+                    if (h && h.locked) return; // Prevent deletion of template hazards
+                    if (!confirm('Remove this hazard?')) return;
+                    const cat = findCategory(t.dataset.catId);
+                    cat.hazards = cat.hazards.filter(
+                        (h) => h.id !== t.dataset.hazId,
+                    );
+                    render();
+                    scheduleSave();
+                } else if (action === 'restore-template-hazard') {
+                    restoreTemplateHazard(
+                        t.dataset.catId,
+                        t.dataset.templateHazardId,
+                    );
+                    render();
+                    scheduleSave();
+                } else if (action === 'import-json') {
+                    document.getElementById('import-input').click();
+                }
+            });
+
+            // Text inputs / textareas (don't re-render, to preserve focus/cursor)
+            page.addEventListener('input', (e) => {
+                const t = e.target;
+                if (!t.dataset.field) return;
+
+                if (t.dataset.field.startsWith('details.')) {
+                    setNested(state.ramp, t.dataset.field, t.value);
+                } else if (t.dataset.field === 'context') {
+                    state.ramp.context = t.value;
+                } else if (t.dataset.field === 'catname') {
+                    const cat = findCategory(t.dataset.catId);
+                    if (cat) cat.name = t.value;
+                } else if (t.dataset.hazId) {
+                    const h = findHazard(t.dataset.catId, t.dataset.hazId);
+                    if (
+                        h &&
+                        (t.dataset.field === 'name' ||
+                            t.dataset.field === 'plan')
+                    ) {
+                        h[t.dataset.field] = t.value;
+                    }
+                }
+                scheduleSave();
+            });
+
+            // Select dropdowns (likelihood/consequence) — update badges without full re-render
+            page.addEventListener('change', (e) => {
+                const t = e.target;
+                if (!t.dataset.field || !t.dataset.hazId) return;
+                const h = findHazard(t.dataset.catId, t.dataset.hazId);
+                if (!h) return;
+                const field = t.dataset.field;
+                // Ignore empty values (from placeholder options)
+                if (t.value === '') return;
+                h[field] =
+                    field === 'initL' || field === 'resL'
+                        ? Number(t.value)
+                        : t.value;
+                refreshHazardBadges(t.dataset.catId, t.dataset.hazId);
+                refreshCategoryBadge(t.dataset.catId);
+                refreshOverallBadge();
+                scheduleSave();
+            });
+
+            // RAMP title (top bar)
+            document
+                .getElementById('ramp-title-input')
+                .addEventListener('input', (e) => {
+                    state.ramp.name = e.target.value;
+                    scheduleSave();
+                });
+
+            // Brand / home button
+            document
+                .getElementById('brand-home')
+                .addEventListener('click', () => {
+                    state.view = 'home';
+                    render();
+                });
+
+            // Export JSON
+            document
+                .getElementById('btn-export')
+                .addEventListener('click', () => {
+                    if (!state.ramp) return;
+                    const blob = new Blob(
+                        [JSON.stringify(state.ramp, null, 2)],
+                        { type: 'application/json' },
+                    );
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const safeName = (state.ramp.name || 'ramp').replace(
+                        /[^a-z0-9-_]+/gi,
+                        '_',
+                    );
+                    a.download = `${safeName}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                });
+
+            // Import JSON
+            document
+                .getElementById('import-input')
+                .addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    try {
+                        const text = await file.text();
+                        const data = JSON.parse(text);
+                        if (!data.categories)
+                            throw new Error('Not a RAMP file');
+                        data.id = uid('ramp'); // avoid collisions with existing saved RAMPs
+                        data.updatedAt = Date.now();
+                        state.ramp = data;
+                        state.view = 'editor';
+                        render();
+                        scheduleSave();
+                    } catch (err) {
+                        alert(
+                            'Could not import this file as a RAMP: ' +
+                                err.message,
+                        );
+                    } finally {
+                        e.target.value = '';
+                    }
+                });
+
+            // Print / Export to PDF
+            document
+                .getElementById('btn-print')
+                .addEventListener('click', () => {
+                    buildPrintArea();
+                    window.print();
+                });
+
+            /* =========================================================================
+   PRINT VIEW
+   ========================================================================= */
+            function buildPrintArea() {
+                const r = state.ramp;
+                const d = r.details;
+                const overall = overallRisk();
+
+                const metaRows = [
+                    ['Activity', r.name || 'Untitled RAMP'],
+                    ['Activity type', d.activityType],
+                    ['Location', d.location],
+                    [
+                        'Dates',
+                        [d.startDate, d.endDate].filter(Boolean).join(' to '),
+                    ],
+                    ['Owner', d.owner],
+                    ['Prepared by', d.preparedBy],
+                    ['Consulted with', d.consultedWith],
+                    ['Approved by', d.approvedBy],
+                ].filter(([, v]) => v);
+
+                const metaHTML = `<div class="print-meta"><table>${metaRows.map(([k, v]) => `<tr><td class="k">${escapeHTML(k)}</td><td>${escapeHTML(v)}</td></tr>`).join('')}</table></div>`;
+
+                const categoriesHTML = r.categories
+                    .map((cat) => {
+                        const cr = categoryRisk(cat);
+                        const rows = cat.hazards
+                            .map((h) => {
+                                const init = getRisk(h.initL, h.initC);
+                                const res = getRisk(h.resL, h.resC);
+                                return `<tr>
+        <td>${escapeHTML(h.name)}</td>
+        <td class="risk-cell"><span class="cat-risk risk-${init.level || ''}">${init.code} - ${init.label}</span></td>
+        <td>${escapeHTML(h.plan).replace(/\n/g, '<br>')}</td>
+        <td class="risk-cell"><span class="cat-risk risk-${res.level || ''}">${res.code} - ${res.label}</span></td>
+      </tr>`;
+                            })
+                            .join('');
+                        return `
+      <h2>${escapeHTML(cat.name)} ${cr ? `<span class="cat-risk risk-${cr}">${cr} · ${RISK_LEVELS[cr].label}</span>` : ''}</h2>
+      <table class="hazards">
+        <tr><th style="width:22%">Hazard</th><th style="width:12%">Initial risk</th><th>Plan / Controls</th><th style="width:12%">Residual risk</th></tr>
+        ${rows || `<tr><td colspan="4">No hazards listed.</td></tr>`}
+      </table>
+    `;
+                    })
+                    .join('');
+
+                const html = `
+    <h1>${escapeHTML(r.name || 'Untitled RAMP')}</h1>
+    ${metaHTML}
+    <div class="ramp-overall"><strong>Overall RAMP risk:</strong> ${overall ? `<span class="cat-risk risk-${overall}">${overall} · ${RISK_LEVELS[overall].label}</span>` : '—'}</div>
+    ${r.context ? `<h2>Context / Assumptions</h2><div class="context">${escapeHTML(r.context)}</div>` : ''}
+    ${categoriesHTML}
+    <div class="print-foot">Generated by RAMP Builder on ${formatDate(Date.now())}</div>
+  `;
+                document.getElementById('print-area').innerHTML = html;
+            }
+
+            /* =========================================================================
+   INIT
+   ========================================================================= */
+            (async function init() {
+                state.index = await loadIndex();
+                render();
+            })();
+        </script>
+    </body>
+</html>
